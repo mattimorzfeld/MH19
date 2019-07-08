@@ -1,0 +1,23 @@
+function RunPFLongRun(Ne,tF,ob_step,infl,locrad)
+
+FileName = strcat('./LongProblemSetups/SynthExp_Gap_',num2str(tF), ...
+                    '_obStep_',num2str(ob_step),'.mat');
+load(FileName)
+
+
+X = MakeInitialEnsemble(mub,Lb,Ne,Nx);
+[xPF,tracePPF,Xa,rho]=PF(X,Z,locrad,infl,H,R,Nx,nAssims, ...
+    Nt, md, mn, Um, Uz, as, Np, Ng, xS, xF, dt);
+rmse = sqrt(sum((xPF-Xt).^2)/Nx);
+spread = sqrt(tracePPF/Nx);
+
+rmse = mean(rmse(20:end));
+spread = mean(spread(20:end));
+
+FileName = strcat('./ResultsTuned/PFResults_Gap_',num2str(tF), ...
+    '_obStep_',num2str(ob_step),...
+    '_Ne_',num2str(Ne), ...
+    '_infl_',num2str(infl), ...
+    '_loc_',num2str(locrad),...
+    '.mat');
+save(FileName,'rmse','spread','rho')

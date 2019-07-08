@@ -1,0 +1,57 @@
+#!/bin/bash
+### script to run a serial job using one core on htc using queue windfall or standard
+### beginning of line, three pound/cross-hatch characters indicate comment
+### beginning of line #PBS indicates an active PBS command/directive
+### Set the job name
+#PBS -N LongRuns 
+### Specify the PI group for this job
+### List of PI groups available to each user can be found with "va" command
+#PBS -W group_list=mmo
+### Set the queue for this job as windfall or standard (adjust ### and #)
+#PBS -q standard
+###PBS -q windfall
+### Request email when job begins and ends - commented out in this case
+### PBS -m bea
+### Specify email address to use for notification - commented out in this case
+### PBS -M mmo@email.arizona.edu
+
+
+
+### Set the number of nodes, cores and memory that will be used for this job
+#PBS -l select=1:ncpus=28:mem=168gb:pcmem=6gb
+
+### Important!!! Include this line for your 1 core job.
+### Without it, the entire node, containing 12 cores, will be allocated
+###PBS -l place=pack:free
+
+### Specify "wallclock time" required for this job, hhh:mm:ss
+#PBS -l walltime=24:00:00
+### Specify total cpu time required for this job, hhh:mm:ss
+### total cputime = walltime * ncpus
+#PBS -l cput=672:00:00
+#
+### Use "module avail" command to list all available modules
+module load matlab
+### set directory for job execution, ~netid = home directory path,
+cd ~mmo/KdV
+### run your executable program with begin and end date and time output
+date
+
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKFLongRun(200,4,2,1.0,1.5)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKFLongRun(200,6,2,0.9,1.0)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKFLongRun(200,8,2,0.9,1.0)" &
+
+matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunSqEnKFLongRun(200,4,2,1.3,2)" &
+matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunSqEnKFLongRun(200,6,2,1.3,2)" &
+matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunSqEnKFLongRun(200,8,2,1.3,1.5)" &
+matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunSqEnKFLongRun(200,8,2,1.3,2)" &
+
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKSLongRun(200,4,2,1,1)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKSLongRun(200,6,2,1,1)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunEnKSLongRun(200,8,2,1,1)" &
+
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunLocPFLongRun(200,4,2,0.1,1.5)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunLocPFLongRun(200,6,2,0.1,3.0)" &
+###matlab -nojvm -nodisplay -nosplash -nodesktop -r "RunLocPFLongRun(200,8,2,0.1,3.5)" &
+wait
+date
